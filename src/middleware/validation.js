@@ -4,6 +4,8 @@ const { validationResult, body, param, query } = require('express-validator');
 const handleValidationErrors = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
+    console.log('Validation Error - Request Body:', JSON.stringify(req.body, null, 2));
+    console.log('Validation Errors:', errors.array());
     return res.status(400).json({
       error: 'Validation failed',
       details: errors.array().map(error => ({
@@ -115,7 +117,8 @@ const validatePayment = [
     .isLength({ min: 2 })
     .withMessage('Card holder name is required'),
   body('paymentCard.cardNumber')
-    .isCreditCard()
+    .isLength({ min: 13, max: 19 })
+    .isNumeric()
     .withMessage('Valid card number is required'),
   body('paymentCard.expireMonth')
     .isInt({ min: 1, max: 12 })

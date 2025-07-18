@@ -6,7 +6,7 @@ const { validateOrder, validatePagination, validateUUID } = require('../middlewa
 const router = express.Router();
 
 // In-memory storage (production'da gerçek veritabanı kullanılacak)
-const orders = new Map();
+const { orders } = require('../data/store');
 const products = require('./products'); // Ürün bilgilerine erişim için
 
 // Sipariş durumları
@@ -105,13 +105,13 @@ router.post('/', authenticateToken, validateOrder, async (req, res, next) => {
     const orderItems = [];
     
     for (const item of items) {
-      // Burada gerçek ürün bilgilerini kontrol etmek gerekiyor
-      // Demo için basit validasyon yapıyorum
+      // Demo için products route'undan gerçek ürünleri alacağız
+      // Şimdilik basit demo data kullanıyoruz
       const product = {
         id: item.productId,
-        name: `Ürün ${item.productId.slice(0, 8)}`,
-        price: Math.random() * 1000 + 100, // Demo fiyat
-        category: 'General'
+        name: 'Demo Ürün',
+        price: 299.99,
+        category: 'Elektronik'
       };
       
       if (item.quantity <= 0) {

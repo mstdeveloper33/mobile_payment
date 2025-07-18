@@ -7,8 +7,7 @@ const iyzicoService = require('../services/iyzico');
 const router = express.Router();
 
 // In-memory storage (production'da gerçek veritabanı kullanılacak)
-const payments = new Map();
-const orders = new Map(); // Normalde orders route'undan import edilecek
+const { payments, orders, users } = require('../data/store');
 
 // Ödeme durumları
 const PAYMENT_STATUS = {
@@ -88,12 +87,13 @@ router.post('/pay', authenticateToken, validatePayment, async (req, res, next) =
     }
 
     // Kullanıcı bilgilerini al (normalde veritabanından)
+    const user = users.get(req.user.email) || users.get('demo@example.com');
     const userInfo = {
       id: userId,
-      firstName: req.user.firstName,
-      lastName: req.user.lastName,
-      email: req.user.email,
-      phone: '+905551234567', // Demo
+      firstName: user?.firstName || 'Demo',
+      lastName: user?.lastName || 'User',
+      email: user?.email || req.user.email,
+      phone: user?.phone || '+905551234567',
       ip: req.ip || '127.0.0.1'
     };
 

@@ -10,6 +10,57 @@ const router = express.Router();
 // In-memory user storage (production'da gerçek veritabanı kullanılacak)
 const users = new Map();
 
+// Demo kullanıcıları oluştur
+const initializeDemoUsers = async () => {
+  const demoUsers = [
+    {
+      id: uuidv4(),
+      email: 'demo@example.com',
+      password: await bcrypt.hash('123456', 10),
+      firstName: 'Demo',
+      lastName: 'Kullanıcı',
+      phone: '+905551234567',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      isActive: true
+    },
+    {
+      id: uuidv4(),
+      email: 'test@test.com',
+      password: await bcrypt.hash('123456', 10),
+      firstName: 'Test',
+      lastName: 'User',
+      phone: '+905559876543',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      isActive: true
+    },
+    {
+      id: uuidv4(),
+      email: 'admin@admin.com',
+      password: await bcrypt.hash('admin123', 10),
+      firstName: 'Admin',
+      lastName: 'Yönetici',
+      phone: '+905551111111',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      isActive: true
+    }
+  ];
+
+  demoUsers.forEach(user => {
+    users.set(user.id, user);
+  });
+
+  console.log('🔐 Demo kullanıcılar oluşturuldu:');
+  console.log('   Email: demo@example.com, Şifre: 123456');
+  console.log('   Email: test@test.com, Şifre: 123456');
+  console.log('   Email: admin@admin.com, Şifre: admin123');
+};
+
+// Demo kullanıcıları başlat
+initializeDemoUsers();
+
 // Kullanıcı kaydı
 router.post('/register', validateUserRegistration, async (req, res, next) => {
   try {
